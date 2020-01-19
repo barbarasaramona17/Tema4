@@ -1,35 +1,45 @@
 import React, { Component } from 'react'
 import RobotStore from '../stores/RobotStore'
 import Robot from './Robot'
-import RobotForm from './RobotForm'
-
-
+import RobotForm from './RobotForm.js';
 
 class RobotList extends Component {
-	constructor(){
+	constructor() {
 		super()
 		this.state = {
-			robots : []
+			robots: []
 		}
 	}
-	componentDidMount(){
+
+	componentDidMount() {
 		this.store = new RobotStore()
 		this.setState({
-			robots : this.store.getRobots()
+			robots: this.store.getRobots()
 		})
 		this.store.emitter.addListener('UPDATE', () => {
 			this.setState({
-				robots : this.store.getRobots()
-			})			
+				robots: this.store.getRobots()
+			})
 		})
 	}
+
+	onAdd = robotData => {
+		const { robots } = this.state;
+		this.setState({
+			robots: [...robots, {
+				id: robots.length + 1,
+				...robotData
+			}]
+		})
+	};
+
 	render() {
 		return (
 			<div>
-				 
+				<RobotForm onAdd={ this.onAdd }/>
 				{
-					this.state.robots.map((e, i) => 
-						<Robot item={e} key={i} />
+					this.state.robots.map((e, i) =>
+						<Robot item={ e } key={ i }/>
 					)
 				}
 			</div>
